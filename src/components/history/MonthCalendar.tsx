@@ -24,12 +24,12 @@ export function MonthCalendar({ anchor, summaries }: MonthCalendarProps) {
   const todayKey = today()
 
   return (
-    <div className="overflow-hidden rounded-xl border border-border/70">
+    <div className="min-w-0 overflow-hidden rounded-xl border border-border/70">
       <div className="grid grid-cols-7 border-b border-border/70 bg-muted/40">
         {WEEKDAY_LABELS.map((label) => (
           <div
             key={label}
-            className="px-2 py-2 text-center text-[11px] font-medium uppercase tracking-[0.06em] text-muted-foreground"
+            className="px-0.5 py-2 text-center text-[10px] font-medium uppercase tracking-[0.04em] text-muted-foreground sm:px-2 sm:text-[11px]"
           >
             {label}
           </div>
@@ -51,7 +51,7 @@ export function MonthCalendar({ anchor, summaries }: MonthCalendarProps) {
               key={key}
               to={ROUTES.historyDay(key)}
               className={cn(
-                'group flex min-h-[92px] flex-col gap-1 border-b border-r border-border/60 p-2 text-left transition-colors duration-200 ease-fluid last:border-r-0 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60',
+                'group flex min-h-[64px] min-w-0 flex-col gap-1 border-b border-r border-border/60 p-1 text-left transition-colors duration-200 ease-fluid last:border-r-0 hover:bg-muted/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-ring/60 sm:min-h-[92px] sm:p-2',
                 !inMonth && 'bg-muted/20',
               )}
               aria-label={`${key}${
@@ -63,7 +63,7 @@ export function MonthCalendar({ anchor, summaries }: MonthCalendarProps) {
               <div className="flex items-center justify-between">
                 <span
                   className={cn(
-                    'inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-[13px] tabular-nums',
+                    'inline-flex h-6 min-w-6 items-center justify-center rounded-full px-1 text-xs tabular-nums sm:text-[13px]',
                     isToday && 'bg-primary font-semibold text-primary-foreground',
                     !isToday && (inMonth ? 'text-foreground' : 'text-muted-foreground/50'),
                   )}
@@ -96,7 +96,7 @@ export function MonthCalendar({ anchor, summaries }: MonthCalendarProps) {
                       style={{ width: `${percent}%` }}
                     />
                   </div>
-                  <p className="text-[11px] leading-tight text-muted-foreground">
+                  <p className="hidden text-[11px] leading-tight text-muted-foreground min-[390px]:block">
                     <span className="font-medium text-foreground/80">{summary.completed}</span>
                     <span className="text-muted-foreground/70">/{summary.total}</span>
                     {summary.unplanned > 0 && (

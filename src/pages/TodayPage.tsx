@@ -173,7 +173,7 @@ export function TodayPage() {
           </Button>
         </div>
 
-        <WidgetGrid columns={4} align="stretch" className="mb-5 rounded-[22px] bg-white/35 px-2 py-1 backdrop-blur-sm">
+        <WidgetGrid columns={4} align="stretch" className="glass-soft mb-5 rounded-[22px] px-2 py-1">
           <StatTile label="Planned" value={planned.length} icon={ListTodo} />
           <StatTile label="Done" value={completed} icon={CheckCircle2} tone="emerald" />
           <StatTile label="In progress" value={inProgress} icon={CircleDot} tone="brand" />
@@ -269,7 +269,7 @@ export function TodayPage() {
                           className="flex items-center gap-2 rounded-lg px-2 py-2 transition-colors duration-200 ease-fluid hover:bg-muted/50"
                         >
                           <div className="min-w-0 flex-1">
-                            <p className="truncate text-[15px] leading-snug">{delivery.title}</p>
+                            <p className="break-words text-[15px] leading-snug">{delivery.title}</p>
                             <p
                               className={cn(
                                 'text-xs text-muted-foreground',

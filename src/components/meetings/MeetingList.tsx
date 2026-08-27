@@ -59,7 +59,7 @@ export function MeetingList({ occurrences, editable = true, emptyText }: Meeting
                 {meeting.title}
               </p>
               {(meeting.project || meeting.requester) && (
-                <p className="truncate text-xs text-muted-foreground">
+                <p className="break-words text-xs leading-relaxed text-muted-foreground">
                   {[meeting.project?.name, meeting.requester?.name].filter(Boolean).join(' · ')}
                 </p>
               )}

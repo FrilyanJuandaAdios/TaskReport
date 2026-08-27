@@ -10,15 +10,30 @@
  *  - everything else (POST, cross-origin, Supabase): straight to the network.
  */
 
-const CACHE = 'taskqueue-v1'
+const CACHE = 'taskqueue-v2'
 const SHELL = '/index.html'
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches
       .open(CACHE)
-      .then((cache) => cache.addAll([SHELL, '/manifest.webmanifest', '/favicon.svg']))
+      .then((cache) => cache.addAll([SHELL, '/manifest.webmanifest', '/Taskqueue.png']))
       .then(() => self.skipWaiting()),
+  )
+})
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close()
+  const target = event.notification.data?.url || '/today'
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clients) => {
+      const existing = clients.find((client) => new URL(client.url).origin === self.location.origin)
+      if (existing) {
+        existing.navigate(target)
+        return existing.focus()
+      }
+      return self.clients.openWindow(target)
+    }),
   )
 })
 

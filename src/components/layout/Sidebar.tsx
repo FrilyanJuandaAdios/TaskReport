@@ -20,8 +20,8 @@ export function SidebarNav({ onNavigate, className }: SidebarProps) {
             cn(
               'group relative flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm transition-all duration-300 ease-fluid',
               isActive
-                ? 'bg-white/75 font-medium text-foreground shadow-[0_8px_24px_-18px_hsl(var(--foreground)/0.5)]'
-                : 'text-muted-foreground hover:translate-x-0.5 hover:bg-white/45 hover:text-foreground',
+                ? 'bg-[hsl(var(--glass-highlight)/0.7)] font-medium text-foreground shadow-[0_8px_24px_-18px_hsl(var(--foreground)/0.5)]'
+                : 'text-muted-foreground hover:translate-x-0.5 hover:bg-[hsl(var(--glass-highlight)/0.42)] hover:text-foreground',
             )
           }
         >

@@ -3,6 +3,7 @@ import { queryKeys } from './queryKeys'
 import { toastError } from './useToast'
 import {
   carryOverTasks,
+  bulkQuickAddTasks,
   createTask,
   deleteTask,
   getTasksForDate,
@@ -82,6 +83,15 @@ export function useQuickAddTask(date: ISODate, defaults: QuickAddDefaults = {}) 
     mutationFn: (input: string) => quickAddTask(input, date, defaults),
     onSuccess: invalidate,
     onError: (error) => toastError(error, 'Could not add the task.'),
+  })
+}
+
+export function useBulkQuickAddTasks(date: ISODate, defaults: QuickAddDefaults = {}) {
+  const invalidate = useInvalidateTaskViews()
+  return useMutation({
+    mutationFn: (lines: string[]) => bulkQuickAddTasks(lines, date, defaults),
+    onSuccess: invalidate,
+    onError: (error) => toastError(error, 'Could not add the pasted tasks.'),
   })
 }
 

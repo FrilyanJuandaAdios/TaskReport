@@ -50,7 +50,7 @@ export function DashboardPage() {
         description={`${formatMediumDate(data.week.from)} – ${formatMediumDate(data.week.to)}`}
       />
 
-      <WidgetGrid columns={4} align="stretch" className="rounded-[22px] bg-white/35 px-2 py-1 backdrop-blur-sm">
+      <WidgetGrid columns={4} align="stretch" className="glass-soft rounded-[22px] px-2 py-1">
         <StatTile
           label="Completed"
           value={data.counters.completed}
@@ -180,7 +180,7 @@ function DeliveryLines({
             className="group flex items-center gap-3 rounded-lg px-2 py-2.5 transition-colors duration-200 ease-fluid hover:bg-muted/50"
           >
             <div className="min-w-0 flex-1 space-y-0.5">
-              <p className="truncate text-[15px] leading-snug">{delivery.title}</p>
+              <p className="break-words text-[15px] leading-snug">{delivery.title}</p>
               <p className="flex flex-wrap items-center gap-x-1.5 text-xs text-muted-foreground">
                 {delivery.project && <span>{delivery.project.name}</span>}
                 {delivery.requester && <span>· {delivery.requester.name}</span>}

@@ -203,6 +203,20 @@ export async function quickAddTask(
   return { task, parsed }
 }
 
+/** Adds pasted lines in order so their manual ordering remains deterministic. */
+export async function bulkQuickAddTasks(
+  lines: string[],
+  date: ISODate = today(),
+  defaults: Pick<CreateTaskInput, 'deliveryId' | 'projectId' | 'requesterId'> = {},
+): Promise<Task[]> {
+  const tasks: Task[] = []
+  for (const line of lines) {
+    const { task } = await quickAddTask(line, date, defaults)
+    tasks.push(task)
+  }
+  return tasks
+}
+
 export async function updateTask(id: ID, patch: Partial<Task>): Promise<Task> {
   const updated = await getRepository().tasks.update(id, { ...patch, updatedAt: nowISO() })
   await logActivity('task', id, 'task.updated', `Updated "${updated.title}"`)

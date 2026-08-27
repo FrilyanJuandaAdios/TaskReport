@@ -95,7 +95,7 @@ export function AppShell() {
 
           <main
             ref={scrollRef}
-            className="flex-1 snap-y snap-proximity overflow-y-auto scroll-smooth px-5 sm:px-8"
+            className="flex-1 snap-y snap-proximity overflow-x-hidden overflow-y-auto scroll-smooth px-4 sm:px-8"
           >
             <Outlet />
           </main>

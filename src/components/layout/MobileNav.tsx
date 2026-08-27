@@ -9,7 +9,7 @@ export function MobileNav() {
   return (
     <nav
       aria-label="Main"
-      className="glass-panel safe-bottom fixed inset-x-3 bottom-3 z-40 grid grid-cols-4 rounded-[20px] md:hidden"
+      className="glass-panel safe-bottom fixed inset-x-3 bottom-[max(0.75rem,env(safe-area-inset-bottom))] z-40 grid grid-cols-4 rounded-[20px] md:hidden"
     >
       {items.map((item) => (
         <NavLink

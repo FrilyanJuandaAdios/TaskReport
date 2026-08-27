@@ -241,14 +241,14 @@ function ProjectsTab({ recentTasks }: { recentTasks: TaskWithRelations[] }) {
             )}
             aria-hidden
           />
-          <span className="truncate text-[15px] font-medium">{project.name}</span>
+          <span className="break-words text-[15px] font-medium leading-snug">{project.name}</span>
           <Badge variant="outline" className="shrink-0 font-mono text-[10px]">
             {project.code}
           </Badge>
         </span>
 
         {project.description && (
-          <span className="mt-1 block truncate text-xs text-muted-foreground">
+          <span className="mt-1 block break-words text-xs leading-relaxed text-muted-foreground">
             {project.description}
           </span>
         )}
@@ -399,7 +399,7 @@ function RequestersTab({ recentTasks }: { recentTasks: TaskWithRelations[] }) {
                     </span>
                     <span className="min-w-0">
                       <span className="flex items-center gap-2">
-                        <span className="truncate text-[15px] font-medium">{requester.name}</span>
+                        <span className="break-words text-[15px] font-medium leading-snug">{requester.name}</span>
                         {requester.isSelf && (
                           <Badge variant="outline" className="shrink-0 text-[10px]">
                             Built-in
@@ -407,7 +407,7 @@ function RequestersTab({ recentTasks }: { recentTasks: TaskWithRelations[] }) {
                         )}
                       </span>
                       {requester.team && (
-                        <span className="block truncate text-xs text-muted-foreground">
+                        <span className="block break-words text-xs leading-relaxed text-muted-foreground">
                           {requester.team}
                         </span>
                       )}
@@ -415,7 +415,7 @@ function RequestersTab({ recentTasks }: { recentTasks: TaskWithRelations[] }) {
                   </span>
 
                   {requester.email && (
-                    <span className="mt-2.5 flex items-center gap-1.5 truncate text-xs text-muted-foreground">
+                    <span className="mt-2.5 flex items-start gap-1.5 break-words text-xs leading-relaxed text-muted-foreground">
                       <Mail className="h-3 w-3 shrink-0" aria-hidden />
                       {requester.email}
                     </span>

@@ -1,6 +1,7 @@
 import type * as XLSXTypes from 'xlsx'
 import { getRepository } from '@/repositories'
-import { hydrateTasks } from './taskService'
+import { createTask, hydrateTasks } from './taskService'
+import { findOrCreateProject, findOrCreateRequester, findOrCreateTag } from './catalogService'
 import { hydrateDeliveries, isDeliveryLate } from './deliveryService'
 import { logActivity } from './activityService'
 import { downloadBlob } from '@/lib/utils'
@@ -12,6 +13,8 @@ import type {
   DeliveryFilter,
   DeliveryWithRelations,
   ISODate,
+  Priority,
+  TaskStatus,
   TaskWithRelations,
 } from '@/types/domain'
 
@@ -324,6 +327,71 @@ export async function exportTasksCsv(from: ISODate, to: ISODate): Promise<void> 
   const sheet = xlsx.utils.json_to_sheet(rows, { header: [...WORK_LOG_COLUMNS] })
   const csv = xlsx.utils.sheet_to_csv(sheet)
   downloadBlob(new Blob([csv], { type: 'text/csv;charset=utf-8' }), `taskqueue-${from}_${to}.csv`)
+}
+
+export interface TaskImportResult {
+  imported: number
+  skipped: number
+}
+
+/** Imports the human-readable Work Log produced by Taskqueue without replacing existing data. */
+export async function importTasksFile(file: File): Promise<TaskImportResult> {
+  const extension = file.name.split('.').pop()?.toLowerCase()
+  if (extension !== 'xlsx' && extension !== 'csv') {
+    throw new Error('Choose a Taskqueue .xlsx or .csv export.')
+  }
+
+  const xlsx = await loadXlsx()
+  const workbook = xlsx.read(await file.arrayBuffer(), { type: 'array' })
+  const sheet = workbook.Sheets['Work Log'] ?? workbook.Sheets[workbook.SheetNames[0]]
+  if (!sheet) throw new Error('No task sheet was found in this file.')
+
+  const rows = xlsx.utils.sheet_to_json<Record<string, unknown>>(sheet, { raw: false, defval: '' })
+  const existing = await getRepository().tasks.list()
+  const existingKeys = new Set(existing.map((task) => `${task.date}\u0000${task.title.trim().toLowerCase()}`))
+  const statusByLabel = new Map(
+    Object.entries(TASK_STATUS_META).map(([status, meta]) => [meta.label.toLowerCase(), status as TaskStatus]),
+  )
+  const priorities = new Set<Priority>(['low', 'normal', 'high', 'urgent'])
+  let imported = 0
+  let skipped = 0
+
+  for (const row of rows) {
+    const date = String(row.Date ?? '').trim()
+    const title = String(row.Task ?? '').trim()
+    const key = `${date}\u0000${title.toLowerCase()}`
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(date) || !title || title.length > 200 || existingKeys.has(key)) {
+      skipped += 1
+      continue
+    }
+
+    const projectName = String(row.Project ?? '').trim()
+    const requesterName = String(row.Requester ?? '').trim()
+    const tagNames = String(row.Tags ?? '').split(',').map((tag) => tag.trim()).filter(Boolean)
+    const statusLabel = String(row.Status ?? '').trim().toLowerCase()
+    const priorityValue = String(row.Priority ?? '').trim().toLowerCase() as Priority
+    const plannedTimeValue = String(row['Planned Time'] ?? '').trim()
+    const projectId = projectName ? (await findOrCreateProject(projectName)).id : null
+    const requesterId = requesterName ? (await findOrCreateRequester(requesterName)).id : null
+    const tagIds = await Promise.all(tagNames.map(async (tag) => (await findOrCreateTag(tag)).id))
+
+    await createTask({
+      title,
+      date,
+      projectId,
+      requesterId,
+      tagIds,
+      status: statusByLabel.get(statusLabel) ?? 'planned',
+      priority: priorities.has(priorityValue) ? priorityValue : 'normal',
+      isPlanned: String(row['Planned / Unplanned'] ?? '').toLowerCase() !== 'unplanned',
+      plannedTime: /^([01]\d|2[0-3]):[0-5]\d$/.test(plannedTimeValue) ? plannedTimeValue : null,
+      notes: String(row.Notes ?? '').trim() || undefined,
+    })
+    existingKeys.add(key)
+    imported += 1
+  }
+
+  return { imported, skipped }
 }
 
 export function copyToClipboard(text: string): Promise<void> {

@@ -92,10 +92,10 @@ export function HistoryPage() {
           title={formatMonthTitle(anchor)}
           icon={CalendarDays}
           padded={false}
-          contentClassName="p-4 pt-0"
+          contentClassName="px-2 pb-2 pt-0 sm:p-4 sm:pt-0"
           action={
-            <div className="flex items-center gap-1.5">
-              <TabsList className="h-8">
+            <div className="grid w-full grid-cols-1 gap-2 min-[390px]:grid-cols-[auto_1fr] sm:flex sm:w-auto sm:items-center sm:gap-1.5">
+              <TabsList className="h-10 w-full min-[390px]:w-auto sm:h-8">
                 <TabsTrigger value="calendar" className="text-[13px]">
                   Calendar
                 </TabsTrigger>
@@ -103,22 +103,24 @@ export function HistoryPage() {
                   List
                 </TabsTrigger>
               </TabsList>
-              <div className="flex items-center gap-1">
+              <div className="grid grid-cols-[2.75rem_1fr_2.75rem] items-center gap-1 sm:flex">
                 <Button
                   variant="outline"
                   size="icon-sm"
+                  className="w-full"
                   aria-label="Previous month"
                   onClick={() => setAnchor((current) => subMonths(current, 1))}
                 >
                   <ChevronLeft className="h-4 w-4" />
                 </Button>
-                <Button variant="outline" size="sm" onClick={() => setAnchor(new Date())}>
+                <Button variant="outline" size="sm" className="w-full" onClick={() => setAnchor(new Date())}>
                   Today
                 </Button>
                 <Button
                   variant="outline"
                   size="icon-sm"
                   aria-label="Next month"
+                  className="w-full"
                   onClick={() => setAnchor((current) => addMonths(current, 1))}
                 >
                   <ChevronRight className="h-4 w-4" />

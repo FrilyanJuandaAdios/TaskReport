@@ -34,11 +34,12 @@ import {
   resetAllData,
   restoreBackup,
 } from '@/services/backupService'
-import { exportDeliveriesExcel, exportRangeExcel, exportTasksCsv } from '@/services/exportService'
+import { exportDeliveriesExcel, exportRangeExcel, exportTasksCsv, importTasksFile } from '@/services/exportService'
 import {
   notificationPermission,
   requestNotificationPermission,
   sendTestReminder,
+  type ReminderKind,
 } from '@/services/reminderService'
 import { notionMode } from '@/services/notionService'
 import { settingsSchema } from '@/schemas'
@@ -160,6 +161,23 @@ function ProfileSection({ settings, onSave }: SectionProps) {
 function RemindersSection({ settings, onSave }: SectionProps) {
   const [permission, setPermission] = React.useState(notificationPermission())
 
+  const testReminder = async (kind: ReminderKind) => {
+    const result = await sendTestReminder(kind)
+    setPermission(notificationPermission())
+    if (result === 'sent') {
+      toast({ title: 'Test reminder sent', description: 'Check your notification center.' })
+      return
+    }
+    toast({
+      variant: 'destructive',
+      title: result === 'unsupported' ? 'Notifications unavailable' : 'Notifications blocked',
+      description:
+        result === 'unsupported'
+          ? 'This browser does not support web notifications.'
+          : 'Allow notifications for Taskqueue in your browser settings, then try again.',
+    })
+  }
+
   const enable = async (key: 'morningReminderEnabled' | 'eveningReminderEnabled', value: boolean) => {
     if (value && permission !== 'granted') {
       const result = await requestNotificationPermission()
@@ -196,7 +214,7 @@ function RemindersSection({ settings, onSave }: SectionProps) {
           time={settings.morningReminderTime}
           onToggle={(value) => enable('morningReminderEnabled', value)}
           onTimeChange={(morningReminderTime) => onSave({ morningReminderTime })}
-          onTest={() => sendTestReminder('morning')}
+          onTest={() => void testReminder('morning')}
         />
         <ReminderRow
           id="evening"
@@ -206,7 +224,7 @@ function RemindersSection({ settings, onSave }: SectionProps) {
           time={settings.eveningReminderTime}
           onToggle={(value) => enable('eveningReminderEnabled', value)}
           onTimeChange={(eveningReminderTime) => onSave({ eveningReminderTime })}
-          onTest={() => sendTestReminder('evening')}
+          onTest={() => void testReminder('evening')}
         />
       </div>
     </Widget>
@@ -235,8 +253,8 @@ function ReminderRow({
   onTest,
 }: ReminderRowProps) {
   return (
-    <div className="flex flex-wrap items-center gap-3 rounded-xl border border-border/70 px-3 py-2.5">
-      <div className="min-w-[200px] flex-1 space-y-0.5">
+    <div className="grid gap-4 rounded-2xl border border-border/70 p-4 sm:grid-cols-[minmax(0,1fr)_7rem_auto_auto] sm:items-center">
+      <div className="min-w-0 space-y-1">
         <Label htmlFor={`${id}-toggle`} className="text-sm">
           {label}
         </Label>
@@ -246,14 +264,17 @@ function ReminderRow({
         type="time"
         value={time}
         onChange={(event) => onTimeChange(event.target.value)}
-        className="w-28"
+        className="h-11 w-full sm:h-9 sm:w-28"
         aria-label={`${label} time`}
       />
-      <Button variant="ghost" size="sm" onClick={onTest} disabled={!enabled}>
+      <Button variant="outline" size="sm" onClick={onTest}>
         <Bell className="h-4 w-4" />
         Test
       </Button>
-      <Switch id={`${id}-toggle`} checked={enabled} onCheckedChange={onToggle} />
+      <div className="flex min-h-11 items-center justify-between gap-3 sm:min-h-0">
+        <span className="text-xs text-muted-foreground sm:sr-only">Enabled</span>
+        <Switch id={`${id}-toggle`} checked={enabled} onCheckedChange={onToggle} />
+      </div>
     </div>
   )
 }
@@ -261,6 +282,7 @@ function ReminderRow({
 function DataSection() {
   const queryClient = useQueryClient()
   const fileInput = React.useRef<HTMLInputElement>(null)
+  const taskImportInput = React.useRef<HTMLInputElement>(null)
 
   const [from, setFrom] = React.useState<ISODate | null>(addDaysISO(today(), -30))
   const [to, setTo] = React.useState<ISODate | null>(today())
@@ -335,6 +357,10 @@ function DataSection() {
           <Upload className="h-4 w-4" />
           Import backup
         </Button>
+        <Button variant="outline" disabled={busy} onClick={() => taskImportInput.current?.click()}>
+          <Upload className="h-4 w-4" />
+          Add tasks from export
+        </Button>
         <input
           ref={fileInput}
           type="file"
@@ -346,11 +372,31 @@ function DataSection() {
             event.target.value = ''
           }}
         />
+        <input
+          ref={taskImportInput}
+          type="file"
+          accept=".xlsx,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/csv"
+          className="hidden"
+          onChange={(event) => {
+            const file = event.target.files?.[0]
+            if (file) {
+              void run(async () => {
+                const result = await importTasksFile(file)
+                await queryClient.invalidateQueries()
+                toast({
+                  title: `${result.imported} tasks imported`,
+                  description: result.skipped > 0 ? `${result.skipped} invalid or duplicate rows were skipped.` : 'Existing data was kept.',
+                })
+              }, 'Task import failed.')
+            }
+            event.target.value = ''
+          }}
+        />
       </div>
 
       <p className="text-xs text-muted-foreground">
-        The JSON backup contains every task, delivery, report and activity entry with their ids —
-        restoring it anywhere reproduces your archive exactly.
+        Excel and CSV add tasks without deleting current data. JSON backup restore replaces the
+        whole archive so ids and relationships stay identical.
       </p>
 
       <div className="flex items-center justify-between gap-4 rounded-xl border border-destructive/25 bg-destructive/[0.03] px-3 py-3">

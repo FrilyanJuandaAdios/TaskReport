@@ -43,29 +43,29 @@ export function Widget({
     <section
       className={cn(
         'flex min-w-0 flex-col overflow-hidden',
-        !bare && 'group/widget rounded-[22px] border-0 bg-white/55 shadow-[inset_0_0_0_1px_hsl(var(--border)/0.72),0_24px_60px_-48px_hsl(var(--foreground)/0.45)] backdrop-blur-sm transition-all duration-500 ease-fluid hover:bg-white/72 hover:shadow-[inset_0_0_0_1px_hsl(var(--border)/0.9),0_30px_65px_-48px_hsl(var(--foreground)/0.55)]',
+        !bare && 'glass-soft group/widget rounded-[22px] shadow-[0_24px_60px_-48px_hsl(var(--foreground)/0.45)] transition-all duration-500 ease-fluid hover:border-border hover:bg-[hsl(var(--glass)/0.68)]',
         className,
       )}
     >
       {(title || action) && (
         <header
           className={cn(
-            'flex items-center justify-between gap-3',
+            'flex flex-col items-stretch gap-3 sm:flex-row sm:items-start sm:justify-between',
             bare ? 'pb-3' : 'px-5 pb-3 pt-4',
           )}
         >
           <div className="min-w-0">
-            <h2 className="flex items-center gap-2 truncate text-sm font-semibold tracking-tight">
+            <h2 className="flex items-start gap-2 text-sm font-semibold leading-snug tracking-tight">
               {Icon && (
-                <Icon className="h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.9} aria-hidden />
+                <Icon className="mt-0.5 h-4 w-4 shrink-0 text-muted-foreground" strokeWidth={1.9} aria-hidden />
               )}
               {title}
             </h2>
             {description && (
-              <p className="mt-0.5 truncate text-xs text-muted-foreground">{description}</p>
+              <p className="mt-1 text-xs leading-relaxed text-muted-foreground">{description}</p>
             )}
           </div>
-          {action && <div className="flex shrink-0 items-center gap-1.5">{action}</div>}
+          {action && <div className="flex min-w-0 flex-wrap items-center gap-1.5 sm:shrink-0">{action}</div>}
         </header>
       )}
 
@@ -160,8 +160,8 @@ export function StatTile({
     <Element
       {...(onClick ? { type: 'button' as const, onClick } : {})}
       className={cn(
-        'relative flex flex-col gap-1 overflow-hidden border-l border-border/80 bg-transparent px-4 py-3.5 text-left transition-all duration-300 ease-fluid first:border-l-0',
-        onClick && 'hover:bg-white/40 active:scale-[0.99]',
+        'relative flex min-w-0 flex-col gap-1 overflow-hidden border-l border-border/80 bg-transparent px-3 py-3.5 text-left transition-all duration-300 ease-fluid sm:px-4',
+        onClick && 'hover:bg-[hsl(var(--glass)/0.42)] active:scale-[0.99]',
         className,
       )}
     >

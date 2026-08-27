@@ -21,14 +21,14 @@ export function PageHeader({ title, description, eyebrow, actions, className }: 
   return (
     <header
       className={cn(
-        'flex flex-col gap-4 pb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-6',
+        'flex flex-col gap-5 pb-7 sm:flex-row sm:items-start sm:justify-between sm:gap-8',
         className,
       )}
     >
       <div className="min-w-0 space-y-1">
         {eyebrow && <div className="text-xs text-muted-foreground">{eyebrow}</div>}
-        <h1 className="truncate text-3xl font-semibold tracking-[-0.035em] sm:text-[34px]">{title}</h1>
-        {description && <p className="text-sm text-muted-foreground">{description}</p>}
+        <h1 className="break-words text-[28px] font-semibold leading-tight tracking-[-0.035em] sm:text-[34px]">{title}</h1>
+        {description && <p className="max-w-2xl text-sm leading-relaxed text-muted-foreground">{description}</p>}
       </div>
       {actions && <div className="flex shrink-0 flex-wrap items-center gap-1.5">{actions}</div>}
     </header>

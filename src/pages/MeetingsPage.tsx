@@ -188,7 +188,7 @@ function MeetingCard({ meeting, onEdit, onDelete, onToggleActive }: MeetingCardP
           onClick={onEdit}
           className="min-w-0 flex-1 rounded-sm text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60"
         >
-          <p className="truncate text-[15px] font-medium leading-snug">{meeting.title}</p>
+          <p className="break-words text-[15px] font-medium leading-snug">{meeting.title}</p>
           <p className="mt-0.5 text-xs text-muted-foreground">{describeRecurrence(meeting)}</p>
         </button>
 

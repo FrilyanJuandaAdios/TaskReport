@@ -13,7 +13,8 @@ import {
 import { ProjectCombobox, RequesterCombobox } from '@/components/common/EntityComboboxes'
 import { DatePicker } from '@/components/common/DatePicker'
 import { useProjects, useRequesters } from '@/hooks/useCatalog'
-import { useCreateTask, useQuickAddTask, type QuickAddDefaults } from '@/hooks/useTasks'
+import { useBulkQuickAddTasks, useCreateTask, useQuickAddTask, type QuickAddDefaults } from '@/hooks/useTasks'
+import { toast } from '@/hooks/useToast'
 import { describeParsedTask, parseQuickTask } from '@/services/quickParse'
 import { PRIORITIES } from '@/types/domain'
 import { PRIORITY_META } from '@/constants/status'
@@ -83,10 +84,11 @@ export const TaskQuickAdd = React.forwardRef<HTMLInputElement, TaskQuickAddProps
     const { data: projects = [] } = useProjects()
     const { data: requesters = [] } = useRequesters()
     const quickAdd = useQuickAddTask(date, defaults)
+    const bulkAdd = useBulkQuickAddTasks(date, defaults)
     const createTask = useCreateTask()
 
     const hero = variant === 'hero'
-    const pending = quickAdd.isPending || createTask.isPending
+    const pending = quickAdd.isPending || bulkAdd.isPending || createTask.isPending
     const trimmed = value.trim()
 
     const preview = React.useMemo(() => {
@@ -170,6 +172,32 @@ export const TaskQuickAdd = React.forwardRef<HTMLInputElement, TaskQuickAddProps
               setValue(event.target.value)
               if (error) setError(null)
             }}
+            onPaste={(event) => {
+              const lines = event.clipboardData
+                .getData('text')
+                .split(/\r?\n/)
+                .map((line) => line.trim())
+                .filter(Boolean)
+              if (lines.length < 2) return
+
+              event.preventDefault()
+              const validLines = lines.filter((line) => line.length <= 200)
+              if (validLines.length === 0) {
+                setError('Each pasted task must be under 200 characters')
+                return
+              }
+
+              void bulkAdd.mutateAsync(validLines).then((tasks) => {
+                reset()
+                toast({
+                  title: `${tasks.length} tasks added`,
+                  description:
+                    validLines.length < lines.length
+                      ? `${lines.length - validLines.length} long lines were skipped.`
+                      : 'Each pasted line became its own task.',
+                })
+              })
+            }}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             onKeyDown={(event) => {
@@ -229,7 +257,7 @@ export const TaskQuickAdd = React.forwardRef<HTMLInputElement, TaskQuickAddProps
         {/* Fixed-height slot so the layout never jumps as the message changes. */}
         <div
           className={cn(
-            'flex h-6 items-center overflow-hidden text-xs text-muted-foreground transition-opacity duration-300 ease-fluid',
+            'mt-2 flex min-h-7 items-start overflow-hidden text-xs leading-relaxed text-muted-foreground transition-opacity duration-300 ease-fluid',
             hero ? 'justify-center' : 'justify-start px-1',
             footer ? 'opacity-100' : 'opacity-0',
           )}
