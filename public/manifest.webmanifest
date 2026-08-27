@@ -1,16 +1,15 @@
 {
-  "name": "Worklog — Daily Work OS",
-  "short_name": "Worklog",
+  "name": "Taskqueue — Daily Work OS",
+  "short_name": "Taskqueue",
   "description": "Personal daily work operating system: check-in, work log, daily report, delivery tracker.",
   "start_url": "/today",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#f6f6fb",
+  "theme_color": "#f6f6fb",
   "orientation": "any",
   "icons": [
-    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
-    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+    { "src": "/Taskqueue.png", "sizes": "1100x1100", "type": "image/png", "purpose": "any maskable" }
   ],
   "shortcuts": [
     { "name": "Today", "url": "/today" },

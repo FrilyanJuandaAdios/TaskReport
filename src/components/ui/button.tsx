@@ -5,13 +5,13 @@ import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
   // `active:scale` is what makes a press feel physical rather than instant.
-  'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-md text-sm font-medium transition-all duration-200 ease-fluid active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 disabled:active:scale-100 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
+  'inline-flex items-center justify-center gap-1.5 whitespace-nowrap rounded-xl text-sm font-medium transition-all duration-300 ease-fluid active:scale-[0.97] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-2 focus-visible:ring-offset-background disabled:pointer-events-none disabled:opacity-40 disabled:active:scale-100 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0',
   {
     variants: {
       variant: {
-        default: 'bg-primary text-primary-foreground hover:bg-primary/85',
+        default: 'bg-primary text-primary-foreground shadow-[0_10px_24px_-14px_hsl(var(--primary)/0.8)] hover:-translate-y-0.5 hover:bg-primary/90',
         destructive: 'bg-destructive text-destructive-foreground hover:bg-destructive/90',
-        outline: 'border border-border bg-background hover:border-foreground/20 hover:bg-muted/60',
+        outline: 'border border-white/80 bg-white/55 backdrop-blur-md hover:border-white hover:bg-white/80',
         secondary: 'bg-secondary text-secondary-foreground hover:bg-secondary/70',
         ghost: 'hover:bg-muted hover:text-foreground',
         link: 'text-foreground underline-offset-4 hover:underline',

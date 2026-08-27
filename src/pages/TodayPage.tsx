@@ -99,8 +99,9 @@ export function TodayPage() {
           }}
         >
           <div className="animate-rise text-center">
-            <p className="text-sm text-muted-foreground">{formatLongDate(date)}</p>
-            <h1 className="mt-3 text-display font-semibold">{greeting}</h1>
+            <p className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-[0.15em] text-muted-foreground"><span className="h-1.5 w-1.5 rounded-full bg-brand" />{formatLongDate(date)}</p>
+            <h1 className="mt-4 text-display font-semibold tracking-[-0.045em]">{greeting}</h1>
+            <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">What deserves your attention first?</p>
           </div>
 
           <div className="mx-auto mt-10 w-full max-w-xl animate-rise [--rise-delay:90ms]">
@@ -158,7 +159,7 @@ export function TodayPage() {
         className="min-h-[100dvh] snap-start pb-28 md:pb-14"
         aria-label="Today's plan"
       >
-        <div className="sticky top-0 z-20 -mx-5 mb-4 flex items-center gap-3 bg-background/85 px-5 py-4 backdrop-blur-xl sm:-mx-8 sm:px-8">
+        <div className="sticky top-0 z-20 -mx-5 mb-4 flex items-center gap-3 bg-background/72 px-5 py-4 backdrop-blur-xl sm:-mx-8 sm:px-8">
           <h2 className="text-lg font-semibold tracking-tight">Today</h2>
           <ProgressPill completed={completed} total={tasks.length} percent={progress} />
           <Button
@@ -172,7 +173,7 @@ export function TodayPage() {
           </Button>
         </div>
 
-        <WidgetGrid columns={4} align="stretch" className="mb-4">
+        <WidgetGrid columns={4} align="stretch" className="mb-5 rounded-[22px] bg-white/35 px-2 py-1 backdrop-blur-sm">
           <StatTile label="Planned" value={planned.length} icon={ListTodo} />
           <StatTile label="Done" value={completed} icon={CheckCircle2} tone="emerald" />
           <StatTile label="In progress" value={inProgress} icon={CircleDot} tone="brand" />

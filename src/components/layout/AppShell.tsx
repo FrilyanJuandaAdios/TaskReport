@@ -37,15 +37,17 @@ export function AppShell() {
 
   return (
     <ScrollContainerProvider value={scrollRef}>
-      <div className="flex h-[100dvh] overflow-hidden bg-background">
-        <aside className="hidden w-[216px] shrink-0 flex-col border-r border-border/70 md:flex">
-          <div className="px-5 pb-1 pt-6">
+      <div className="flex h-[100dvh] overflow-hidden bg-transparent p-0 md:p-3">
+        <aside className="glass-panel hidden w-[224px] shrink-0 flex-col overflow-hidden rounded-[22px] md:flex">
+          <div className="px-5 pb-3 pt-5">
             <Link
               to={ROUTES.today}
-              className="text-[15px] font-semibold tracking-tight transition-opacity ease-fluid hover:opacity-70"
+              className="inline-flex items-center gap-2.5 text-[17px] font-semibold tracking-[-0.025em] transition-opacity ease-fluid hover:opacity-75"
             >
-              Worklog
+              <img src="/Taskqueue.png" alt="" className="h-8 w-8 object-contain" />
+              Taskqueue
             </Link>
+            <div className="queue-line mt-4 h-px w-full opacity-70" />
           </div>
           <SidebarNav className="flex-1 overflow-y-auto" />
           <div className="p-3">
@@ -53,8 +55,8 @@ export function AppShell() {
           </div>
         </aside>
 
-        <div className="flex min-w-0 flex-1 flex-col">
-          <header className="z-30 flex shrink-0 items-center gap-1 border-b border-border/70 px-3 py-2 md:hidden">
+        <div className="flex min-w-0 flex-1 flex-col md:ml-3">
+          <header className="glass-panel z-30 mx-3 mt-3 flex shrink-0 items-center gap-1 rounded-2xl px-2 py-1.5 md:hidden">
             <Sheet open={menuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon" aria-label="Open menu">
@@ -63,14 +65,15 @@ export function AppShell() {
               </SheetTrigger>
               <SheetContent side="left" className="p-0">
                 <SheetTitle className="px-5 pb-1 pt-6 text-[15px] font-semibold tracking-tight">
-                  Worklog
+                  Taskqueue
                 </SheetTitle>
                 <SidebarNav onNavigate={() => setMenuOpen(false)} />
               </SheetContent>
             </Sheet>
 
-            <Link to={ROUTES.today} className="text-sm font-semibold tracking-tight">
-              Worklog
+            <Link to={ROUTES.today} className="inline-flex items-center gap-2 text-sm font-semibold tracking-tight">
+              <img src="/Taskqueue.png" alt="" className="h-6 w-6 object-contain" />
+              Taskqueue
             </Link>
 
             <Button

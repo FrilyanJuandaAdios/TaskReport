@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { App } from './App'
 import { Toaster } from '@/components/ui/toaster'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { LaunchScreen } from '@/components/layout/LaunchScreen'
 import { initRepository } from '@/repositories'
 import { applyTheme, getSettings } from '@/services/settingsService'
 import { env } from '@/lib/env'
@@ -49,6 +50,7 @@ async function bootstrap() {
           <BrowserRouter>
             <App />
           </BrowserRouter>
+          <LaunchScreen />
           <Toaster />
         </TooltipProvider>
       </QueryClientProvider>

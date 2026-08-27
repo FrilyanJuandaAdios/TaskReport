@@ -13,8 +13,8 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 6% 10%;
+    --background: 228 32% 97%;
+    --foreground: 231 24% 15%;
 
     --card: 0 0% 100%;
     --card-foreground: 240 6% 10%;
@@ -22,30 +22,30 @@
     --popover: 0 0% 100%;
     --popover-foreground: 240 6% 10%;
 
-    --primary: 240 6% 10%;
+    --primary: 244 32% 24%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 5% 96%;
+    --secondary: 238 30% 94%;
     --secondary-foreground: 240 6% 10%;
 
-    --muted: 240 5% 96.5%;
-    --muted-foreground: 240 4% 52%;
+    --muted: 232 28% 94%;
+    --muted-foreground: 231 10% 46%;
 
-    --accent: 240 5% 95%;
+    --accent: 253 34% 93%;
     --accent-foreground: 240 6% 10%;
 
     /* The single accent hue. Interactive, in-progress, focus. */
-    --brand: 212 92% 45%;
+    --brand: 249 42% 53%;
     --brand-foreground: 0 0% 100%;
 
     --destructive: 358 68% 48%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 240 6% 91%;
-    --input: 240 6% 88%;
-    --ring: 212 92% 45%;
+    --border: 232 24% 87%;
+    --input: 232 20% 83%;
+    --ring: 249 42% 53%;
 
-    --radius: 12px;
+    --radius: 16px;
 
     /* Apple's standard ease-out. Used by every transition in the app. */
     --ease-fluid: cubic-bezier(0.32, 0.72, 0, 1);
@@ -102,6 +102,10 @@
       'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
     font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11', 'ss01';
     letter-spacing: -0.011em;
+    background-image:
+      radial-gradient(circle at 82% 8%, hsl(259 54% 90% / 0.42), transparent 32rem),
+      radial-gradient(circle at 14% 88%, hsl(189 46% 89% / 0.32), transparent 30rem);
+    background-attachment: fixed;
   }
 
   /* Large type gets tighter tracking, the way SF Pro Display does. */
@@ -156,6 +160,115 @@
     animation: fade 0.4s var(--ease-fluid) both;
     animation-delay: var(--rise-delay, 0ms);
   }
+
+  .glass-panel {
+    background: hsl(var(--card) / 0.64);
+    border: 1px solid hsl(0 0% 100% / 0.72);
+    box-shadow: 0 18px 45px -32px hsl(241 35% 30% / 0.35);
+    backdrop-filter: blur(24px) saturate(125%);
+  }
+
+  .queue-line {
+    background: linear-gradient(90deg, hsl(var(--brand) / 0), hsl(var(--brand) / 0.72), hsl(187 42% 66% / 0.65), hsl(var(--brand) / 0));
+    background-size: 180% 100%;
+    animation: queue-flow 5s var(--ease-fluid) infinite alternate;
+  }
+}
+
+@keyframes queue-flow {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+
+.launch-screen {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: hsl(var(--background));
+  animation: launch-exit 0.72s var(--ease-fluid) 1.58s both;
+}
+
+.launch-glow {
+  position: absolute;
+  width: min(72vw, 42rem);
+  aspect-ratio: 1;
+  border-radius: 999px;
+  background: radial-gradient(circle, hsl(var(--brand) / 0.13), transparent 66%);
+  filter: blur(10px);
+  animation: launch-breathe 1.6s var(--ease-fluid) both;
+}
+
+.launch-brand {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+}
+
+.launch-logo {
+  width: clamp(4rem, 11vw, 5.5rem);
+  height: clamp(4rem, 11vw, 5.5rem);
+  object-fit: contain;
+  opacity: 0;
+  transform: scale(0.72) rotate(-7deg);
+  animation: launch-logo-in 0.72s var(--ease-fluid) 0.12s forwards;
+}
+
+.launch-wordmark {
+  max-width: 0;
+  overflow: hidden;
+  opacity: 0;
+  color: hsl(var(--foreground));
+  font-size: clamp(1.7rem, 5vw, 2.5rem);
+  font-weight: 650;
+  letter-spacing: -0.045em;
+  white-space: nowrap;
+  transform: translateX(-0.75rem);
+  animation: launch-wordmark-in 0.8s var(--ease-fluid) 0.62s forwards;
+}
+
+.launch-progress {
+  position: absolute;
+  bottom: max(2rem, env(safe-area-inset-bottom));
+  width: 5rem;
+  height: 2px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: hsl(var(--foreground) / 0.08);
+}
+
+.launch-progress span {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: hsl(var(--brand) / 0.65);
+  transform: scaleX(0);
+  transform-origin: left;
+  animation: launch-progress 1.55s var(--ease-fluid) 0.25s forwards;
+}
+
+@keyframes launch-logo-in {
+  to { opacity: 1; transform: scale(1) rotate(0); }
+}
+
+@keyframes launch-wordmark-in {
+  to { max-width: 12rem; opacity: 1; transform: translateX(0); }
+}
+
+@keyframes launch-progress {
+  to { transform: scaleX(1); }
+}
+
+@keyframes launch-breathe {
+  from { opacity: 0; transform: scale(0.65); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes launch-exit {
+  to { opacity: 0; transform: translateY(-2.5%) scale(1.025); visibility: hidden; }
 }
 
 @keyframes rise {
@@ -198,6 +311,10 @@
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
+  }
+
+  .launch-screen {
+    animation: launch-exit 0.01ms linear 0.35s both !important;
   }
 }
 

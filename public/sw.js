@@ -1,5 +1,5 @@
 /**
- * Worklog service worker.
+ * Taskqueue service worker.
  *
  * Deliberately dependency-free (no Workbox): the app is a SPA whose data lives
  * in IndexedDB, so the only thing that needs caching is the shell.
@@ -10,7 +10,7 @@
  *  - everything else (POST, cross-origin, Supabase): straight to the network.
  */
 
-const CACHE = 'worklog-v1'
+const CACHE = 'taskqueue-v1'
 const SHELL = '/index.html'
 
 self.addEventListener('install', (event) => {

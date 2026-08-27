@@ -88,7 +88,7 @@ export async function buildBackup(): Promise<BackupPayload> {
 
 export async function downloadBackup(): Promise<void> {
   const backup = await buildBackup()
-  const filename = `worklog-backup-${backup.exportedAt.slice(0, 10)}.json`
+  const filename = `taskqueue-backup-${backup.exportedAt.slice(0, 10)}.json`
   downloadBlob(
     new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' }),
     filename,

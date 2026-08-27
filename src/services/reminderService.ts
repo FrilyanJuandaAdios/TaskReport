@@ -53,7 +53,7 @@ function notify(kind: ReminderKind): void {
   const message = MESSAGES[kind]
   const notification = new Notification(message.title, {
     body: message.body,
-    tag: `worklog-${kind}`,
+    tag: `taskqueue-${kind}`,
   })
   notification.onclick = () => {
     window.focus()

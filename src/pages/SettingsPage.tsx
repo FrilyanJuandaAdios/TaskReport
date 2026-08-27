@@ -289,7 +289,7 @@ function DataSection() {
         title: 'Backup restored',
         description: `${result.tasks} tasks, ${result.deliveries} deliveries, ${result.reports} reports.`,
       })
-    }, 'Restore failed — the file may not be a Worklog backup.')
+    }, 'Restore failed — the file may not be a Taskqueue backup.')
     setPendingFile(null)
   }
 

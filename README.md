@@ -1,4 +1,4 @@
-# Worklog — Personal Daily Work OS
+# Taskqueue — Personal Daily Work OS
 
 A single-user work operating system for a UI/UX designer: capture the day's work in
 seconds, update it as the day changes, turn it into a daily report in the evening, and

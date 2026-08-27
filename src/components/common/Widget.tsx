@@ -43,7 +43,7 @@ export function Widget({
     <section
       className={cn(
         'flex min-w-0 flex-col overflow-hidden',
-        !bare && 'rounded-2xl border border-border/70 bg-card',
+        !bare && 'group/widget rounded-[22px] border-0 bg-white/55 shadow-[inset_0_0_0_1px_hsl(var(--border)/0.72),0_24px_60px_-48px_hsl(var(--foreground)/0.45)] backdrop-blur-sm transition-all duration-500 ease-fluid hover:bg-white/72 hover:shadow-[inset_0_0_0_1px_hsl(var(--border)/0.9),0_30px_65px_-48px_hsl(var(--foreground)/0.55)]',
         className,
       )}
     >
@@ -107,7 +107,7 @@ export function WidgetGrid({
   return (
     <div
       className={cn(
-        'grid gap-4',
+        'grid gap-3 sm:gap-4',
         align === 'start' ? 'items-start' : 'items-stretch',
         columns === 2 && 'sm:grid-cols-2',
         columns === 3 && 'sm:grid-cols-2 lg:grid-cols-3',
@@ -160,8 +160,8 @@ export function StatTile({
     <Element
       {...(onClick ? { type: 'button' as const, onClick } : {})}
       className={cn(
-        'flex flex-col gap-1 rounded-2xl border border-border/70 bg-card px-4 py-3.5 text-left transition-all duration-200 ease-fluid',
-        onClick && 'hover:border-foreground/20 hover:bg-muted/40 active:scale-[0.99]',
+        'relative flex flex-col gap-1 overflow-hidden border-l border-border/80 bg-transparent px-4 py-3.5 text-left transition-all duration-300 ease-fluid first:border-l-0',
+        onClick && 'hover:bg-white/40 active:scale-[0.99]',
         className,
       )}
     >

@@ -50,7 +50,7 @@ export function DashboardPage() {
         description={`${formatMediumDate(data.week.from)} – ${formatMediumDate(data.week.to)}`}
       />
 
-      <WidgetGrid columns={4} align="stretch">
+      <WidgetGrid columns={4} align="stretch" className="rounded-[22px] bg-white/35 px-2 py-1 backdrop-blur-sm">
         <StatTile
           label="Completed"
           value={data.counters.completed}
