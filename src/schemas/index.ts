@@ -37,6 +37,7 @@ export const taskDetailsSchema = z.object({
   description: z.string().max(2000).optional(),
   date: isoDate,
   plannedTime: hhmm.nullable().optional(),
+  reminderTime: hhmm.nullable().optional(),
   targetDate: isoDate.nullable().optional(),
   status: z.enum(TASK_STATUSES),
   priority: z.enum(PRIORITIES),

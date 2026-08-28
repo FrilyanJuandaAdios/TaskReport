@@ -1,5 +1,5 @@
 import { currentTime } from '@/lib/date'
-import type { AppSettings, HHmm } from '@/types/domain'
+import type { AppSettings, HHmm, Task } from '@/types/domain'
 
 /**
  * Reminder scheduling — deliberately the smallest thing that works.
@@ -110,6 +110,54 @@ export function scheduleReminders(settings: AppSettings): ReminderHandle {
       timers.length = 0
     },
   }
+}
+
+/** Arms one-shot notifications for incomplete tasks with a reminder time. */
+export function scheduleTaskReminders(tasks: Task[]): ReminderHandle {
+  const timers: number[] = []
+  const now = Date.now()
+
+  for (const task of tasks) {
+    if (!task.reminderTime || task.status === 'completed' || task.status === 'cancelled') continue
+
+    const at = new Date(`${task.date}T${task.reminderTime}:00`).getTime()
+    const delay = at - now
+    if (delay <= 0 || delay > 2_147_000_000) continue
+
+    timers.push(window.setTimeout(() => void notifyTask(task), delay))
+  }
+
+  return {
+    cancel() {
+      timers.forEach((timer) => window.clearTimeout(timer))
+      timers.length = 0
+    },
+  }
+}
+
+async function notifyTask(task: Task): Promise<ReminderResult> {
+  if (!notificationsSupported()) return 'unsupported'
+  if (Notification.permission !== 'granted') return 'permission-denied'
+
+  const options: NotificationOptions = {
+    body: task.description || 'Waktunya mulai mengerjakan task ini.',
+    tag: `taskqueue-task-${task.id}`,
+    icon: '/Taskqueue.png',
+    badge: '/Taskqueue.png',
+    data: { url: `/history/${task.date}` },
+  }
+  const registration = await navigator.serviceWorker?.getRegistration()
+  if (registration) {
+    await registration.showNotification(task.title, options)
+    return 'sent'
+  }
+
+  const notification = new Notification(task.title, options)
+  notification.onclick = () => {
+    window.focus()
+    window.location.assign(`/history/${task.date}`)
+  }
+  return 'sent'
 }
 
 /** Lets Settings verify the permission flow without waiting until 09:00. */

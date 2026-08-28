@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
+import { Bell, Eye, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import {
@@ -63,8 +63,13 @@ export function TaskRow({
   return (
     <div
       style={style}
+      onClick={(event) => {
+        const target = event.target as HTMLElement
+        if (target.closest('button, input, textarea, select, a, [role="button"], [role="menuitem"]')) return
+        onEdit()
+      }}
       className={cn(
-        'group flex animate-rise items-start gap-3 rounded-lg px-2 py-2.5 transition-colors duration-200 ease-fluid hover:bg-muted/50',
+        'group flex cursor-pointer animate-rise items-start gap-3 rounded-lg px-2 py-2.5 transition-colors duration-200 ease-fluid hover:bg-muted/50',
         className,
       )}
     >
@@ -101,7 +106,7 @@ export function TaskRow({
         ) : (
           <button
             type="button"
-            onClick={() => setEditing(true)}
+            onClick={onEdit}
             className={cn(
               'block rounded-sm text-left text-[15px] leading-snug transition-colors duration-200 ease-fluid focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60',
               completed || cancelled
@@ -117,6 +122,12 @@ export function TaskRow({
       </div>
 
       <div className="flex shrink-0 items-center gap-0.5 pt-0.5">
+        {task.reminderTime && (
+          <span className="mr-1 inline-flex items-center gap-1 text-xs tabular-nums text-muted-foreground" title={`Reminder at ${task.reminderTime}`}>
+            <Bell className="h-3.5 w-3.5" />
+            {task.reminderTime}
+          </span>
+        )}
         {showStatus && (
           <TaskStatusPicker value={task.status} onChange={onStatusChange} />
         )}
@@ -138,8 +149,12 @@ export function TaskRow({
               </>
             )}
             <DropdownMenuItem onSelect={onEdit}>
+              <Eye className="h-4 w-4" />
+              View details
+            </DropdownMenuItem>
+            <DropdownMenuItem onSelect={() => setEditing(true)}>
               <Pencil className="h-4 w-4" />
-              Edit details
+              Rename
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem

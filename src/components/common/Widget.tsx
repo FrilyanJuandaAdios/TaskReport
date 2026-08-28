@@ -160,7 +160,7 @@ export function StatTile({
     <Element
       {...(onClick ? { type: 'button' as const, onClick } : {})}
       className={cn(
-        'relative flex min-w-0 flex-col gap-1 overflow-hidden border-l border-border/80 bg-transparent px-3 py-3.5 text-left transition-all duration-300 ease-fluid sm:px-4',
+        'relative flex min-w-0 flex-col gap-1 overflow-hidden border-l border-border/80 bg-transparent px-3 py-3.5 text-left transition-all duration-300 ease-fluid first:border-l-0 sm:px-4',
         onClick && 'hover:bg-[hsl(var(--glass)/0.42)] active:scale-[0.99]',
         className,
       )}

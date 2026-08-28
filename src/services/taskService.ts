@@ -127,6 +127,7 @@ export async function createTask(input: CreateTaskInput): Promise<Task> {
     description: input.description,
     date: input.date,
     plannedTime: input.plannedTime ?? null,
+    reminderTime: input.reminderTime ?? null,
     startTime: null,
     endTime: null,
     status: input.status ?? 'planned',

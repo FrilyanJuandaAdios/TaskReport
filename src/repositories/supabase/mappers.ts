@@ -31,6 +31,7 @@ export interface TaskRow {
   description: string | null
   date: string
   planned_time: string | null
+  reminder_time: string | null
   start_time: string | null
   end_time: string | null
   status: TaskStatus
@@ -173,6 +174,7 @@ export function toTask(row: TaskRow, tagIds: string[] = []): Task {
     description: row.description ?? undefined,
     date: row.date,
     plannedTime: row.planned_time,
+    reminderTime: row.reminder_time,
     startTime: row.start_time,
     endTime: row.end_time,
     status: row.status,
@@ -337,6 +339,7 @@ export function fromTask(patch: Partial<Task>): Partial<TaskRow> {
   if ('description' in patch) row.description = patch.description ?? null
   if ('date' in patch) row.date = patch.date
   if ('plannedTime' in patch) row.planned_time = patch.plannedTime ?? null
+  if ('reminderTime' in patch) row.reminder_time = patch.reminderTime ?? null
   if ('startTime' in patch) row.start_time = patch.startTime ?? null
   if ('endTime' in patch) row.end_time = patch.endTime ?? null
   if ('status' in patch) row.status = patch.status

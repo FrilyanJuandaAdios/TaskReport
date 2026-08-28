@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { Loader2, Trash2 } from 'lucide-react'
+import { Bell, Loader2, Trash2 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -14,12 +14,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { FormField } from '@/components/common/FormField'
 import { DatePicker } from '@/components/common/DatePicker'
 import { TagPicker } from '@/components/common/TagPicker'
@@ -35,6 +35,7 @@ import { taskDetailsSchema, type TaskDetailsValues } from '@/schemas'
 import { PRIORITY_META, TASK_STATUS_META } from '@/constants/status'
 import { PRIORITIES, TASK_STATUSES } from '@/types/domain'
 import { parseTimeInput } from '@/lib/date'
+import { requestNotificationPermission } from '@/services/reminderService'
 import type { TaskWithRelations } from '@/types/domain'
 
 interface TaskDetailsSheetProps {
@@ -43,7 +44,10 @@ interface TaskDetailsSheetProps {
   onOpenChange: (open: boolean) => void
 }
 
-type FormState = Omit<TaskDetailsValues, 'plannedTime'> & { plannedTime: string }
+type FormState = Omit<TaskDetailsValues, 'plannedTime' | 'reminderTime'> & {
+  plannedTime: string
+  reminderTime: string
+}
 
 function toFormState(task: TaskWithRelations): FormState {
   return {
@@ -51,6 +55,7 @@ function toFormState(task: TaskWithRelations): FormState {
     description: task.description ?? '',
     date: task.date,
     plannedTime: task.plannedTime ?? '',
+    reminderTime: task.reminderTime ?? '',
     targetDate: task.targetDate ?? null,
     status: task.status,
     priority: task.priority,
@@ -66,8 +71,8 @@ function toFormState(task: TaskWithRelations): FormState {
 /**
  * Full task editor.
  *
- * A side sheet rather than a modal: the day's list stays visible behind it, and
- * nothing here is required to *use* the app — the quick-add path never opens it.
+ * A centered detail editor. The quick-add path stays fast, while clicking a task
+ * reveals its complete context without navigating away from the day.
  */
 export function TaskDetailsSheet({ task, open, onOpenChange }: TaskDetailsSheetProps) {
   const [form, setForm] = React.useState<FormState | null>(null)
@@ -86,9 +91,9 @@ export function TaskDetailsSheet({ task, open, onOpenChange }: TaskDetailsSheetP
 
   if (!task || !form) {
     return (
-      <Sheet open={open} onOpenChange={onOpenChange}>
-        <SheetContent />
-      </Sheet>
+      <Dialog open={open} onOpenChange={onOpenChange}>
+        <DialogContent />
+      </Dialog>
     )
   }
 
@@ -103,7 +108,15 @@ export function TaskDetailsSheet({ task, open, onOpenChange }: TaskDetailsSheetP
       return
     }
 
-    const candidate: TaskDetailsValues = { ...form, plannedTime }
+    const reminderTime = form.reminderTime.trim() ? parseTimeInput(form.reminderTime) : null
+    if (form.reminderTime.trim() && !reminderTime) {
+      setErrors({ reminderTime: 'Use a 24-hour time such as 14:00' })
+      return
+    }
+
+    if (reminderTime) await requestNotificationPermission()
+
+    const candidate: TaskDetailsValues = { ...form, plannedTime, reminderTime }
     const result = taskDetailsSchema.safeParse(candidate)
 
     if (!result.success) {
@@ -133,14 +146,12 @@ export function TaskDetailsSheet({ task, open, onOpenChange }: TaskDetailsSheetP
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
-        <SheetHeader className="border-b px-6 py-4">
-          <SheetTitle>Task details</SheetTitle>
-          <SheetDescription>
-            Everything here is optional — the daily flow never requires it.
-          </SheetDescription>
-        </SheetHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="flex max-h-[min(88dvh,820px)] w-[calc(100%-1.5rem)] max-w-2xl flex-col gap-0 overflow-hidden p-0">
+        <DialogHeader className="border-b px-6 py-5 pr-16">
+          <DialogTitle className="text-lg">Task details</DialogTitle>
+          <DialogDescription>See the full context, schedule a reminder, or update this task.</DialogDescription>
+        </DialogHeader>
 
         <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
           <FormField id="task-title" label="Task name" error={errors.title} required>
@@ -184,6 +195,24 @@ export function TaskDetailsSheet({ task, open, onOpenChange }: TaskDetailsSheetP
                 placeholder="09:30"
                 inputMode="numeric"
               />
+            </FormField>
+
+            <FormField
+              id="task-reminder"
+              label="Remind me at"
+              error={errors.reminderTime}
+              hint="You’ll get a notification on the task date."
+            >
+              <div className="relative">
+                <Bell className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  id="task-reminder"
+                  type="time"
+                  value={form.reminderTime}
+                  onChange={(event) => set('reminderTime', event.target.value)}
+                  className="pl-9"
+                />
+              </div>
             </FormField>
 
             <FormField id="task-status" label="Status">
@@ -334,7 +363,7 @@ export function TaskDetailsSheet({ task, open, onOpenChange }: TaskDetailsSheetP
             </Button>
           </div>
         </div>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

@@ -12,12 +12,12 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-} from '@/components/ui/sheet'
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from '@/components/ui/dialog'
 import { FormField } from '@/components/common/FormField'
 import { DatePicker } from '@/components/common/DatePicker'
 import { TagPicker } from '@/components/common/TagPicker'
@@ -127,14 +127,14 @@ export function DeliveryFormSheet({
   }
 
   return (
-    <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="flex w-full flex-col gap-0 p-0 sm:max-w-lg">
-        <SheetHeader className="border-b px-6 py-4">
-          <SheetTitle>{delivery ? 'Edit delivery' : 'New delivery'}</SheetTitle>
-          <SheetDescription>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="flex max-h-[min(88dvh,820px)] w-[calc(100%-1.5rem)] max-w-2xl flex-col gap-0 overflow-hidden p-0">
+        <DialogHeader className="border-b px-6 py-5 pr-16">
+          <DialogTitle>{delivery ? 'Edit delivery' : 'New delivery'}</DialogTitle>
+          <DialogDescription>
             A delivery is what a stakeholder asked for. Daily tasks link to it.
-          </SheetDescription>
-        </SheetHeader>
+          </DialogDescription>
+        </DialogHeader>
 
         <form onSubmit={submit} className="flex flex-1 flex-col overflow-hidden">
           <div className="flex-1 space-y-5 overflow-y-auto px-6 py-5">
@@ -289,7 +289,7 @@ export function DeliveryFormSheet({
             </Button>
           </div>
         </form>
-      </SheetContent>
-    </Sheet>
+      </DialogContent>
+    </Dialog>
   )
 }

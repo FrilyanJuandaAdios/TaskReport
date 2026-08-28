@@ -107,6 +107,7 @@ create table if not exists tasks (
   description   text,
   date          date not null,
   planned_time  text,
+  reminder_time text,
   start_time    text,
   end_time      text,
   status        task_status not null default 'planned',

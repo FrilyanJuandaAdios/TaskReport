@@ -136,6 +136,8 @@ export interface Task extends BaseEntity {
   date: ISODate
   /** Optional intended start, e.g. "09:00". Null => "Anytime today". */
   plannedTime?: HHmm | null
+  /** Optional notification time on the task's work date. */
+  reminderTime?: HHmm | null
   startTime?: HHmm | null
   endTime?: HHmm | null
   status: TaskStatus
@@ -324,6 +326,7 @@ export type CreateTaskInput = {
     Task,
     | 'description'
     | 'plannedTime'
+    | 'reminderTime'
     | 'targetDate'
     | 'status'
     | 'isPlanned'

@@ -17,7 +17,10 @@ export function LaunchScreen() {
       <div className="launch-glow" />
       <div className="launch-brand">
         <img className="launch-logo" src="/Taskqueue.png" alt="" />
-        <span className="launch-wordmark">Taskqueue</span>
+        <div className="launch-copy">
+          <span className="launch-wordmark">Taskqueue</span>
+          <span className="launch-byline">by Frilyan design</span>
+        </div>
       </div>
       <div className="launch-progress"><span /></div>
     </div>
